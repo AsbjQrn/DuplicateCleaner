@@ -8,6 +8,11 @@
     <artifactId>duplicate-cleaner</artifactId>
     <version>1.0</version>
 
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -22,7 +27,6 @@
         </plugins>
     </build>
 
-    <!-- https://mvnrepository.com/artifact/org.spockframework/spock-core -->
     <dependencies>
         <dependency>
             <groupId>org.spockframework</groupId>
