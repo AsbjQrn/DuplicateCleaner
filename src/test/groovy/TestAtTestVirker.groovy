@@ -6,8 +6,13 @@ class TestAtTestVirker extends Specification {
 
     def "testattestvireksomdeskal"(){
 
-        given:
+        when:
         Application.main('Hejjegerentest')
+
+        then:
+        true
+
+
 
 
     }
