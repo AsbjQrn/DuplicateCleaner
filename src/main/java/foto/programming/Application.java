@@ -2,6 +2,7 @@ package foto.programming;
 
 import foto.utils.ChecksumAdler32;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,9 +12,9 @@ import java.util.function.Predicate;
 
 public class Application {
 
+    enum ChecksumCalculation {FIRST_THOUSAND_BYTES, FULL}
+
     List imagetypes = Arrays.asList("jpg", "raw");
-    SortedMap<Long, List<FileWrapper>> sizeMap = new TreeMap<>();
-    ChecksumAdler32 checksumAdler32 = new ChecksumAdler32();
 
     private String getFileTypeinLowercase(Path path) {
         String filnavn = path.getFileName().toString();
@@ -21,88 +22,71 @@ public class Application {
     }
 
 
-    public void addToSizeMap(Path path) {
+    private void addToDuplicateMap(long key, FileWrapper fileWrapper, HashMap<Long, List<FileWrapper>> duplicatesMap) {
 
-        FileWrapper fileWrapper = new FileWrapper(path.toFile());
-
-        Long size = fileWrapper.getTheFile().length();
-
-        List filesOfSameSize = sizeMap.get(size);
-
+        List filesOfSameSize = duplicatesMap.get(key);
         if (filesOfSameSize == null) {
             filesOfSameSize = new ArrayList<FileWrapper>();
             filesOfSameSize.add(fileWrapper);
-            sizeMap.put(size, filesOfSameSize);
+            duplicatesMap.put(key, filesOfSameSize);
         } else
             filesOfSameSize.add(fileWrapper);
     }
 
 
-    private void registerImagefilesToSizeMap() throws IOException {
+    private void findDuplicatesBasedOnLength(HashMap<Long, List<FileWrapper>> duplicatesMapBasedonLength) throws IOException {
 
         Predicate<Path> isImage = (p) -> imagetypes.contains(getFileTypeinLowercase(p));
 
         Files.walk(Paths.get("/home/asbjorn/Downloads/"))
                 .forEach(p -> {
                     if (isImage.test(p)) {
-                        addToSizeMap(p);
+                        File file = p.toFile();
+                        addToDuplicateMap(file.length(), new FileWrapper(file), duplicatesMapBasedonLength);
                     }
                 });
     }
 
-    private void calculateFirst1000Bytes(List<FileWrapper> files) {
-        files.forEach(f -> f.calculateCheckSumFirst1000bytes(checksumAdler32));
-    }
 
-    private void calculateFullCheckSum(List<FileWrapper> files) {
-        files.forEach(f -> f.calculateFullCheckSum(checksumAdler32));
-    }
+    private HashMap<Long, List<FileWrapper>> findDuplicatesBasedOnChecksum(Map<Long, List<FileWrapper>> duplicatesMap, ChecksumCalculation checksumCalculation) {
 
-    private void sortByFirst1000Bytes(List<FileWrapper> files) {
-        Collections.sort(files, Comparator.comparing(FileWrapper::getCheckSumFirst1000bytes));
-//        (fileWrapper1, fileWrapper2) -> fileWrapper1.getCheckSumFirst1000bytes().compareTo(fileWrapper2.getCheckSumFirst1000bytes()) );
-    }
-
-    private void markAndCountDuplicates(List<FileWrapper> files) {
-        FileWrapper fileWrapperOld = null;
-        FileWrapper fileWrapper;
-        for (int i = 0; i < files.size(); i++) {
-            fileWrapper = files.get(i);
-            if (fileWrapperOld != null) {
-                if (fileWrapper.getCheckSumFirst1000bytes() == fileWrapperOld.getCheckSumFirst1000bytes()) {
-                    fileWrapper.setDuplicate(true);
-                    fileWrapperOld.setDuplicate(true);
-                }
+        HashMap<Long, List<FileWrapper>> duplicatesMapBasedOnChecksum = new HashMap<>();
+        Set<Map.Entry<Long, List<FileWrapper>>> entryset = duplicatesMap.entrySet();
+        for (Map.Entry<Long, List<FileWrapper>> entry : entryset) {
+            List<FileWrapper> possibleDuplicates = entry.getValue();
+            if (possibleDuplicates.size() > 1) {
+                possibleDuplicates.forEach(fileWrapper -> {
+                    long checksum = calculateChecksum(checksumCalculation, fileWrapper);
+                    addToDuplicateMap(checksum, fileWrapper, duplicatesMapBasedOnChecksum);
+                });
             }
-            fileWrapperOld = fileWrapper;
         }
+        return duplicatesMapBasedOnChecksum;
     }
 
-    private void checkForDuplicates(List<FileWrapper> files) {
+    private long calculateChecksum(ChecksumCalculation checksumCalculation, FileWrapper fileWrapper) {
 
-        calculateFirst1000Bytes(files);
-        sortByFirst1000Bytes(files);
-        markAndCountDuplicates(files);
-
+        switch (checksumCalculation) {
+            case FIRST_THOUSAND_BYTES:
+                return fileWrapper.calculateCheckSumFirst1000bytes();
+            case FULL:
+                return fileWrapper.calculateFullCheckSum();
+            default:
+                return 0L;
+        }
     }
 
 
     public static void main(String[] args) throws IOException {
 
         Application application = new Application();
-        application.registerImagefilesToSizeMap();
-        application.filterNonDuplicatesFromSizemap();
+        HashMap<Long, List<FileWrapper>> duplicatesMap = new HashMap<>();
+        application.findDuplicatesBasedOnLength(duplicatesMap);
+        duplicatesMap = application.findDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FIRST_THOUSAND_BYTES);
+        duplicatesMap = application.findDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FULL);
+
 
     }
 
-    private void filterNonDuplicatesFromSizemap() {
 
-        sizeMap.entrySet().forEach(e -> {
-                    if (e.getValue().size() > 1)
-                        checkForDuplicates(e.getValue());
-                    else
-                        sizeMap.remove(e.getKey());
-                }
-        );
-    }
 }

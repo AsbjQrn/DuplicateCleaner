@@ -12,19 +12,20 @@ public class FileWrapper {
     private Long checkSum;
     private File theFile;
     boolean duplicate;
+    private static ChecksumAdler32 checksumAdler32 = new ChecksumAdler32();
 
 
     public FileWrapper(File theFile) {
         this.theFile = theFile;
     }
 
-    public Long calculateCheckSumFirst1000bytes(ChecksumAdler32 adler32) {
-        this.checkSumFirst1000bytes = adler32.calculate(theFile, true);
+    public Long calculateCheckSumFirst1000bytes() {
+        this.checkSumFirst1000bytes = checksumAdler32.calculate(theFile, true);
         return checkSumFirst1000bytes;
     }
 
-    public Long calculateFullCheckSum(ChecksumAdler32 adler32) {
-        this.checkSum = adler32.calculate(theFile, false);
+    public Long calculateFullCheckSum() {
+        this.checkSum = checksumAdler32.calculate(theFile, false);
         return checkSum;
     }
 
