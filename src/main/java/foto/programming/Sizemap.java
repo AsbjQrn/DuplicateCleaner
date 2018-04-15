@@ -11,13 +11,9 @@ public class Sizemap extends HashMap {
 
 
     public void put(Path path) {
-
         File file = path.toFile();
-
         Long size = file.length();
-
         List filesOfSameSize = sizes.get(size);
-
         if (filesOfSameSize == null) {
             filesOfSameSize = new ArrayList<File>();
             filesOfSameSize.add(file);
@@ -25,6 +21,4 @@ public class Sizemap extends HashMap {
         } else
             filesOfSameSize.add(file);
     }
-
-
 }
