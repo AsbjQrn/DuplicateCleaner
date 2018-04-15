@@ -1,7 +1,5 @@
 package foto.programming;
 
-import foto.utils.ChecksumAdler32;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +10,7 @@ import java.util.function.Predicate;
 
 public class Application {
 
-    enum ChecksumCalculation {FIRST_THOUSAND_BYTES, FULL}
+    enum ChecksumCalculation {FIRST_THOUSAND_BYTES_CHECKSUM, FULL_CHECKSUM}
 
     List imagetypes = Arrays.asList("jpg", "raw");
 
@@ -67,9 +65,9 @@ public class Application {
     private long calculateChecksum(ChecksumCalculation checksumCalculation, FileWrapper fileWrapper) {
 
         switch (checksumCalculation) {
-            case FIRST_THOUSAND_BYTES:
+            case FIRST_THOUSAND_BYTES_CHECKSUM:
                 return fileWrapper.calculateCheckSumFirst1000bytes();
-            case FULL:
+            case FULL_CHECKSUM:
                 return fileWrapper.calculateFullCheckSum();
             default:
                 return 0L;
@@ -82,8 +80,11 @@ public class Application {
         Application application = new Application();
         HashMap<Long, List<FileWrapper>> duplicatesMap = new HashMap<>();
         application.findDuplicatesBasedOnLength(duplicatesMap);
-        duplicatesMap = application.findDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FIRST_THOUSAND_BYTES);
-        duplicatesMap = application.findDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FULL);
+        System.out.println("Duplikater baseret på længde map-størrelse: " + duplicatesMap.size() );
+        duplicatesMap = application.findDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FIRST_THOUSAND_BYTES_CHECKSUM);
+        System.out.println("Duplikater baseret på FIRST_THOUSAND_BYTES map-størrelse: " + duplicatesMap.size() );
+        duplicatesMap = application.findDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FULL_CHECKSUM);
+        System.out.println("Duplikater baseret på FULL map-størrelse: " + duplicatesMap.size() );
 
 
     }

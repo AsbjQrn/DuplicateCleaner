@@ -25,10 +25,8 @@ public class ChecksumAdler32 {
             while (cis.read(buffer) >= 0) {
                 checksum = cis.getChecksum().getValue();
                 if (onlyFirst1000) return checksum;
-                System.out.println(checksum + " " + file.length() + " " + file);
             }
             checksum = cis.getChecksum().getValue();
-            System.out.println(checksum);
 
 
         } catch (IOException e) {
