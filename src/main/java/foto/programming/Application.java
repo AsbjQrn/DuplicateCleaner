@@ -35,7 +35,7 @@ public class Application {
 
     private void mapDuplicatesBasedOnLength(HashMap<Long, List<FileWrapper>> duplicatesMapBasedonLength) throws IOException {
         Predicate<Path> isImage = (p) -> imagetypes.contains(getFileTypeinLowercase(p));
-        Path path = Paths.get(stiLilletest);
+        Path path = Paths.get(sti1StorDisk);
         System.out.println(path.toString());
         Files.walk(path)
                 .forEach(p -> {
