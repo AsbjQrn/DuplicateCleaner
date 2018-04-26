@@ -10,15 +10,23 @@ import java.util.function.Predicate;
 
 public class Application {
     enum ChecksumCalculation {FIRST_THOUSAND_BYTES_CHECKSUM, FULL_CHECKSUM}
+
+    private String rod = "/";
     private String sti1StorDisk = "/media/asbjorn/Mediedisc/Billeder eksport til linux/";
     private String sti2StorDisk = "/media/asbjorn/3TerraByte/Billeder eksport til linux/";
     private String stiLilletest = "/home/asbjorn/Downloads/";
 
     List imagetypes = Arrays.asList("jpg", "raw");
 
+
     private String getFileTypeinLowercase(Path path) {
-        String filnavn = path.getFileName().toString();
-        return filnavn.substring(filnavn.lastIndexOf('.') + 1).toLowerCase();
+
+        if (path.getFileName() != null) {
+            String filnavn = path.getFileName().toString();
+            return filnavn.substring(filnavn.lastIndexOf('.') + 1).toLowerCase();
+        }
+        return ".not_A_file";
+
     }
 
 
@@ -35,7 +43,7 @@ public class Application {
 
     private void mapDuplicatesBasedOnLength(HashMap<Long, List<FileWrapper>> duplicatesMapBasedonLength) throws IOException {
         Predicate<Path> isImage = (p) -> imagetypes.contains(getFileTypeinLowercase(p));
-        Path path = Paths.get(stiLilletest);
+        Path path = Paths.get(rod);
         System.out.println(path.toString());
         Files.walk(path)
                 .forEach(p -> {
