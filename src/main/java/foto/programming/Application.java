@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class Application {
-    enum ChecksumCalculation {FIRST_THOUSAND_BYTES_CHECKSUM, FULL_CHECKSUM}
+    enum ChecksumCalculation {FIRST_1000_BYTES_CHECKSUM, FULL_CHECKSUM}
 
     private String rod = "/";
     private String sti1StorDisk = "/media/asbjorn/Mediedisc/Billeder eksport til linux/";
@@ -72,7 +72,7 @@ public class Application {
 
     private long calculateChecksum(ChecksumCalculation checksumCalculation, FileWrapper fileWrapper) {
         switch (checksumCalculation) {
-            case FIRST_THOUSAND_BYTES_CHECKSUM:
+            case FIRST_1000_BYTES_CHECKSUM:
                 return fileWrapper.calculateCheckSumFirst1000bytes();
             case FULL_CHECKSUM:
                 return fileWrapper.calculateFullCheckSum();
@@ -87,7 +87,7 @@ public class Application {
         HashMap<Long, List<FileWrapper>> duplicatesMap = new HashMap<>();
         application.mapDuplicatesBasedOnLength(duplicatesMap);
         System.out.println("Duplikater baseret på fil-længde map-størrelse: " + duplicatesMap.size());
-        duplicatesMap = application.mapDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FIRST_THOUSAND_BYTES_CHECKSUM);
+        duplicatesMap = application.mapDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FIRST_1000_BYTES_CHECKSUM);
         System.out.println("Duplikater baseret på FIRST_THOUSAND_BYTES_CHECKSUM map-størrelse: " + duplicatesMap.size());
         duplicatesMap = application.mapDuplicatesBasedOnChecksum(duplicatesMap, ChecksumCalculation.FULL_CHECKSUM);
         System.out.println("Duplikater baseret på FULL_CHECKSUM map-størrelse: " + duplicatesMap.size());
