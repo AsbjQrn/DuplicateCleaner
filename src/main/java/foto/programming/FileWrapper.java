@@ -11,7 +11,6 @@ public class FileWrapper {
     private Long checkSumFirst1000bytes;
     private Long checkSum;
     private File theFile;
-    boolean duplicate;
     private static ChecksumAdler32 checksumAdler32 = new ChecksumAdler32();
 
 
@@ -50,11 +49,5 @@ public class FileWrapper {
         return checkSumFirst1000bytes;
     }
 
-    public boolean isDuplicate() {
-        return duplicate;
-    }
 
-    public void setDuplicate(boolean duplicate) {
-        this.duplicate = duplicate;
-    }
 }
