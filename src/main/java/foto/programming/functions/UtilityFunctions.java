@@ -32,7 +32,11 @@ public class UtilityFunctions {
         }
     };
 
-    public final static String getFileExtensionInlowercase(Path p) {
+    public static boolean isFile(Path path){
+        return path.toFile().isFile();
+    }
+
+    public static String getFileExtensionInlowercase(Path p) {
         try {
             return fileTypeDetector.probeContentType(p);
         } catch (IOException e) {
@@ -60,8 +64,9 @@ public class UtilityFunctions {
 
     };
     public static final BiFunction<File, TypeOfCheckSumCalculation, Long> calculateChecksum = (f, t) -> calculate(f, t);
-    public static final Predicate<Path> isImage = (p) -> imageTypes.contains(getFileExtensionInlowercase(p));
-    public static final Predicate<Path> isVideo = (p) -> videoTypes.contains(getFileExtensionInlowercase(p));
+    public static final Predicate<String> isImage = (s) -> imageTypes.contains(s);
+    public static final Predicate<String> isVideo = (s) -> videoTypes.contains(s);
+    public static final Predicate<String> isMedia = (s) -> isImage.test(s) || isVideo.test(s) ;
     public static final Predicate<List> sizeGreaterThanOne = (list) -> list.size() > 1;
 
     private static long calculate(File file, TypeOfCheckSumCalculation typeOfCheckSumCalculation) {
