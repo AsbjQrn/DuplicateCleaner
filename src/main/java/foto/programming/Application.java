@@ -61,7 +61,8 @@ public class Application {
     }
 
 
-    private HashMap<Long, List<File>> mapDuplicatesBasedOnChecksum(Map<Long, List<File>> duplicatesMap, TypeOfCheckSumCalculation typeOfCheckSumCalculation) {
+    private HashMap<Long, List<File>> mapDuplicatesBasedOnChecksum(Map<Long, List<File>> duplicatesMap,
+                                                                   TypeOfCheckSumCalculation typeOfCheckSumCalculation) {
         HashMap<Long, List<File>> duplicatesMapBasedOnChecksum = new HashMap<>();
 
         duplicatesMap.entrySet().stream().filter(e -> sizeGreaterThanOne.test(e.getValue())).forEach(listEntry ->

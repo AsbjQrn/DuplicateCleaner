@@ -44,15 +44,7 @@ public class UtilityFunctions {
         }
         return null;
     }
-    private void addToMap(long key, File fileWrapper, HashMap<Long, List<File>> mediaMap) {
-        List filesOfSameSize = mediaMap.get(key);
-        if (filesOfSameSize == null) {
-            filesOfSameSize = new ArrayList<File>();
-            filesOfSameSize.add(fileWrapper);
-            mediaMap.put(key, filesOfSameSize);
-        } else
-            filesOfSameSize.add(fileWrapper);
-    }
+
     public static final TriConsumer<Long, File, HashMap<Long, List<File>>> addToMap = (key, file, map) -> {
         List filesOfSameSize = map.get(key);
         if (filesOfSameSize == null) {

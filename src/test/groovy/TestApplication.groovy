@@ -18,17 +18,13 @@ class TestApplication extends Specification {
         then:
 
         Application.mediafilesCounter == 2
-        Application.notMediafilesCounter == 1
+        Application.notMediafilesCounter == 2
         Application.mediaFileTypesFound.contains('avi')
         Application.mediaFileTypesFound.contains('jpg')
-        !Application.mediaFileTypesFound.contains('jkj')
         Application.notMediaFileTypesFound.contains('jkj')
+        !Application.mediaFileTypesFound.contains('jkj')
         !Application.notMediaFileTypesFound.contains('avi')
         !Application.notMediaFileTypesFound.contains('jpg')
-
-
-
-
 
     }
 }
