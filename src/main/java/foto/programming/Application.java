@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.*;
 
 import static foto.programming.functions.UtilityFunctions.*;
@@ -74,7 +75,8 @@ public class Application {
         return duplicatesMapBasedOnChecksum;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
+        Database.makemediaDatabase();
         Application application = new Application();
         Path path = Paths.get(sti1StorDisk);
         HashMap<Long, List<File>> mediaMap = new HashMap<>();
